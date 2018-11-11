@@ -10,7 +10,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace>
     </RootNamespace>
-    <ProjectGuid>{C2183EF2-30AF-C215-42CC-399B81B1C024}</ProjectGuid>
+    <ProjectGuid>{9BD54C43-F1F5-9D0E-B157-E17F6FC66677}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -61,21 +61,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\CorpseCamera.cs" />
     <Compile Include="Assets\Scripts\DeadState.cs" />
     <Compile Include="Assets\Scripts\TestPlayerControler2.cs" />
     <Compile Include="Assets\Scripts\回転.cs" />
     <Compile Include="Assets\Scripts\往復運動.cs" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>C:/Users/seichi/Documents/Test Unity Project2/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/seichi/Documents/GitHub/Unity-project/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/Users/seichi/Documents/Test Unity Project2/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Users/seichi/Documents/GitHub/Unity-project/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Users/seichi/Documents/Test Unity Project2/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Users/seichi/Documents/GitHub/Unity-project/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/Users/seichi/Documents/Test Unity Project2/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Users/seichi/Documents/GitHub/Unity-project/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

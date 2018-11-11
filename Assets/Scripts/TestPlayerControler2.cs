@@ -6,8 +6,11 @@ using UnityEngine;
 
 public class TestPlayerControler2 : MonoBehaviour {
 
-    
-    GameObject Pelvis,Leg_L,Knee_L,Leg_R,Knee_R,Spine1,Spine2,Head,LeftArm,LeftElbow,RightArm,RightElbow;
+    public float x = 0,y = 5,z = 0;
+
+    GameObject Pelvis, Leg_L, Knee_L, Leg_R, Knee_R, Spine1, Spine2, Head, LeftArm, LeftElbow, RightArm, RightElbow;
+    CorpseCamera cpscm;
+    Camera FPC,TPC;
     GameObject[] Children;
     Rigidbody rb;
     Rigidbody[] childrenrb;
@@ -43,6 +46,10 @@ public class TestPlayerControler2 : MonoBehaviour {
                         LeftElbow = this.transform.Find("Armature/Parent/Pelvis/Spine1/Spine2/LeftArm/LeftElbow").gameObject;
                     RightArm = this.transform.Find("Armature/Parent/Pelvis/Spine1/Spine2/RightArm").gameObject;
                         RightElbow = this.transform.Find("Armature/Parent/Pelvis/Spine1/Spine2/RightArm/RightElbow").gameObject;
+        //カメラ取得
+        FPC = GameObject.Find("FPC").GetComponent<Camera>();
+        TPC = GameObject.Find("TPC").GetComponent<Camera>();
+        cpscm = GameObject.Find("CorpseCamera").GetComponent<CorpseCamera>();
 
         rb = GetComponent<Rigidbody>();
 
@@ -76,10 +83,17 @@ public class TestPlayerControler2 : MonoBehaviour {
         move = direction.TransformDirection(move);
         rb.AddForce(move);
 
-        //視点
+        //カメラ角度
         CameraAngle.x -= Input.GetAxis("Mouse Y");
         CameraAngle.y += Input.GetAxis("Mouse X");
-
+        //視点切り替え
+        if (Input.GetKeyDown("h"))
+        {
+            Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            FPC.enabled = !FPC.isActiveAndEnabled;
+            TPC.enabled = !TPC.isActiveAndEnabled;
+        }
+        
         var spine2eulerX = Spine2.transform.localEulerAngles.x;//Spine2のx軸の回転角
 
         if (spine2eulerX > 90)//0度以下の時の補正
@@ -127,7 +141,7 @@ public class TestPlayerControler2 : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.transform.tag == "TrueDeath"&& !a)
+        if (collision.transform.tag == "TrueDeath" && !a)
         {
             a = true;
             GameObject DeadAvator = (GameObject)Resources.Load("DeadAvator");//Resourcesフォルダからプレハブを読み込む
@@ -142,17 +156,23 @@ public class TestPlayerControler2 : MonoBehaviour {
 
             corpse.GetComponent<DeadState>().rotation = corpserot;
 
+            //死体カメラへの値渡し
+            cpscm.target = corpse;
+
             List_Corpse.Add(corpse);//リストに追加
             Debug.Log(List_Corpse.Count);
             if (List_Corpse.Count > 5)//死体が5体より多いなら古いものから消す
             {
                 Destroy(List_Corpse[0]);
                 List_Corpse.RemoveAt(0);
-                
+
             }
 
             rb.velocity = new Vector3(0, 0, 0);
-            transform.position = new Vector3(0, 10, 5);//リスポーン
+
+            transform.position = new Vector3(x, y, z);
+            gameObject.SetActive(false);
+            Invoke("Resporn", 2.0f);
         }
     }
 
@@ -162,6 +182,12 @@ public class TestPlayerControler2 : MonoBehaviour {
         {
             a = false;
         }
+    }
+
+    void Resporn()
+    {
+        gameObject.SetActive(true);
+        a = false;
     }
 
 }
