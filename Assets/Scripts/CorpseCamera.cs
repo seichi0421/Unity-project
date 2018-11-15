@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CorpseCamera : MonoBehaviour {
-    public GameObject target;
+    public GameObject target = null;
     GameObject lastobj = null;
     Quaternion rotation;
     Vector3 direction;
@@ -13,18 +13,20 @@ public class CorpseCamera : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() { 
-        if(lastobj != target){
-            lastobj = target;
-            transform.position = target.transform.position;
-            Vector3 ad = new Vector3(0, 3, -5);
-            ad = target.transform.TransformDirection(ad);
-            transform.position += ad;
-        }
-        
+    void Update() {
+        if (target != null) {
+            if (lastobj != target) {
+                lastobj = target;
+                transform.position = target.transform.position;
+                Vector3 ad = new Vector3(0, 3, -5);
+                ad = target.transform.Find("Armature/Parent/Pelvis").transform.TransformDirection(ad);
+                transform.position += ad;
+            }
 
-        direction = target.transform.position - transform.position;
-        rotation = Quaternion.LookRotation(direction);
-        transform.rotation = rotation;
+
+            direction = target.transform.position - transform.position;
+            rotation = Quaternion.LookRotation(direction);
+            transform.rotation = rotation;
+        }
 	}
 }

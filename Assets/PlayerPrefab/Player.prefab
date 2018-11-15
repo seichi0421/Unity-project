@@ -1054,6 +1054,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f21ea519fca0024aba4d5b42db9dd53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  x: 0
+  y: 5
+  z: 0
+  speed: 5
+  anycorpse: takumi_corpse
 --- !u!136 &136008363378406928
 CapsuleCollider:
   m_ObjectHideFlags: 1

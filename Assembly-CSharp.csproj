@@ -62,7 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\CorpseCamera.cs" />
-    <Compile Include="Assets\Scripts\DeadState.cs" />
+    <Compile Include="Assets\Scripts\CorpseState.cs" />
+    <Compile Include="Assets\Scripts\Gun.cs" />
     <Compile Include="Assets\Scripts\TestPlayerControler2.cs" />
     <Compile Include="Assets\Scripts\回転.cs" />
     <Compile Include="Assets\Scripts\往復運動.cs" />

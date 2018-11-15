@@ -6,11 +6,13 @@ using UnityEngine;
 
 public class TestPlayerControler2 : MonoBehaviour {
 
-    public float x = 0,y = 5,z = 0;
+    public float x = 0, y = 5, z = 0, speed = 5;
+    float sp;
+    public string anycorpse = "takumi_corpse";
 
     GameObject Pelvis, Leg_L, Knee_L, Leg_R, Knee_R, Spine1, Spine2, Head, LeftArm, LeftElbow, RightArm, RightElbow;
-    CorpseCamera cpscm;
-    Camera FPC,TPC;
+    CorpseCamera cpscmsc;
+    Camera FPC,TPC,cpscm;
     GameObject[] Children;
     Rigidbody rb;
     Rigidbody[] childrenrb;
@@ -49,7 +51,8 @@ public class TestPlayerControler2 : MonoBehaviour {
         //カメラ取得
         FPC = GameObject.Find("FPC").GetComponent<Camera>();
         TPC = GameObject.Find("TPC").GetComponent<Camera>();
-        cpscm = GameObject.Find("CorpseCamera").GetComponent<CorpseCamera>();
+        cpscm = GameObject.Find("CorpseCamera").GetComponent<Camera>();
+        cpscmsc = GameObject.Find("CorpseCamera").GetComponent<CorpseCamera>();
 
         rb = GetComponent<Rigidbody>();
 
@@ -72,16 +75,24 @@ public class TestPlayerControler2 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
+
+        Cursor.lockState = CursorLockMode.Locked;
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            sp = speed*2;
+        }
+        else { sp = speed; }
 
 
         //移動
         Vector3 move;
-        move = new Vector3(Input.GetAxis("Horizontal")*100, 0, Input.GetAxis("Vertical")*100);
+        move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         var direction = Head.transform;
         direction.localEulerAngles = new Vector3(0, direction.transform.localEulerAngles.y, 0);
         move = direction.TransformDirection(move);
-        rb.AddForce(move);
+        rb.velocity = new Vector3(move.x * sp, rb.velocity.y, move.z * sp);
+        
 
         //カメラ角度
         CameraAngle.x -= Input.GetAxis("Mouse Y");
@@ -89,7 +100,6 @@ public class TestPlayerControler2 : MonoBehaviour {
         //視点切り替え
         if (Input.GetKeyDown("h"))
         {
-            Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             FPC.enabled = !FPC.isActiveAndEnabled;
             TPC.enabled = !TPC.isActiveAndEnabled;
         }
@@ -141,23 +151,24 @@ public class TestPlayerControler2 : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.tag == "TrueDeath" && !a)
+
+        if (((collision.transform.tag == "Bullet")||(collision.transform.tag == "TrueDeath")) && !a)
         {
             a = true;
-            GameObject DeadAvator = (GameObject)Resources.Load("DeadAvator");//Resourcesフォルダからプレハブを読み込む
+            GameObject DeadAvator = (GameObject)Resources.Load(anycorpse);//Resourcesフォルダからプレハブを読み込む
 
             GameObject corpse = Instantiate(DeadAvator, Pelvis.transform.position, transform.rotation);//死体生成
-            corpse.GetComponent<DeadState>().vel = rb.velocity;
+            corpse.GetComponent<CorpseState>().vel = rb.velocity;
 
             //死体用のクォータニオン
             corpserot = new Quaternion[] {Pelvis.transform.rotation,Leg_L.transform.rotation, Knee_L.transform.rotation, Leg_R.transform.rotation, Knee_R.transform.rotation,
                                    Spine1.transform.rotation,Spine2.transform.rotation,Head.transform.rotation,LeftArm.transform.rotation,LeftElbow.transform.rotation,
                                    RightArm.transform.rotation,RightElbow.transform.rotation };
 
-            corpse.GetComponent<DeadState>().rotation = corpserot;
+            corpse.GetComponent<CorpseState>().rotation = corpserot;
 
             //死体カメラへの値渡し
-            cpscm.target = corpse;
+            cpscmsc.target = corpse;
 
             List_Corpse.Add(corpse);//リストに追加
             Debug.Log(List_Corpse.Count);
@@ -170,14 +181,24 @@ public class TestPlayerControler2 : MonoBehaviour {
 
             rb.velocity = new Vector3(0, 0, 0);
 
-            transform.position = new Vector3(x, y, z);
-            gameObject.SetActive(false);
+            cpscm.enabled = true;
+            
+            this.gameObject.SetActive(false);
             Invoke("Resporn", 2.0f);
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (Input.GetKey("space"))
+        {
+            rb.velocity = new Vector3(rb.velocity.x,5,rb.velocity.z);
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
+
         if (collision.transform.tag == "TrueDeath")
         {
             a = false;
@@ -186,7 +207,9 @@ public class TestPlayerControler2 : MonoBehaviour {
 
     void Resporn()
     {
+        cpscm.enabled = false;
         gameObject.SetActive(true);
+        transform.position = new Vector3(x, y, z);
         a = false;
     }
 
