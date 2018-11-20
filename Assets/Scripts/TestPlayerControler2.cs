@@ -25,6 +25,7 @@ public class TestPlayerControler2 : MonoBehaviour {
     Quaternion[] corpserot;
 
     bool a = false;
+    public bool death = false;
 
     List<GameObject> List_Corpse = new List<GameObject>();
 
@@ -75,6 +76,7 @@ public class TestPlayerControler2 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -137,7 +139,17 @@ public class TestPlayerControler2 : MonoBehaviour {
             Pelvis_rotation = Quaternion.RotateTowards(Pelvis_rotation, PelvisTarget, 15);
             Head_rotation = Quaternion.RotateTowards(Head_rotation, HeadTarget, 15);
         }
-        Pelvis.transform.localPosition = new Vector3(0, 0.01f, 0);
+
+
+
+        if (death)
+        {
+            death = false;
+            
+            Death();
+        }
+
+
     }
 
     private void LateUpdate()
@@ -154,37 +166,9 @@ public class TestPlayerControler2 : MonoBehaviour {
 
         if (((collision.transform.tag == "Bullet")||(collision.transform.tag == "TrueDeath")) && !a)
         {
+            death = true;
             a = true;
-            GameObject DeadAvator = (GameObject)Resources.Load(anycorpse);//Resourcesフォルダからプレハブを読み込む
-
-            GameObject corpse = Instantiate(DeadAvator, Pelvis.transform.position, transform.rotation);//死体生成
-            corpse.GetComponent<CorpseState>().vel = rb.velocity;
-
-            //死体用のクォータニオン
-            corpserot = new Quaternion[] {Pelvis.transform.rotation,Leg_L.transform.rotation, Knee_L.transform.rotation, Leg_R.transform.rotation, Knee_R.transform.rotation,
-                                   Spine1.transform.rotation,Spine2.transform.rotation,Head.transform.rotation,LeftArm.transform.rotation,LeftElbow.transform.rotation,
-                                   RightArm.transform.rotation,RightElbow.transform.rotation };
-
-            corpse.GetComponent<CorpseState>().rotation = corpserot;
-
-            //死体カメラへの値渡し
-            cpscmsc.target = corpse;
-
-            List_Corpse.Add(corpse);//リストに追加
-            Debug.Log(List_Corpse.Count);
-            if (List_Corpse.Count > 5)//死体が5体より多いなら古いものから消す
-            {
-                Destroy(List_Corpse[0]);
-                List_Corpse.RemoveAt(0);
-
-            }
-
-            rb.velocity = new Vector3(0, 0, 0);
-
-            cpscm.enabled = true;
             
-            this.gameObject.SetActive(false);
-            Invoke("Resporn", 2.0f);
         }
     }
 
@@ -196,13 +180,48 @@ public class TestPlayerControler2 : MonoBehaviour {
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerStay(Collider other)
     {
-
-        if (collision.transform.tag == "TrueDeath")
+        if(other.transform.tag == "Bom")
         {
-            a = false;
+            if (other.gameObject.GetComponent<Explosion>().explosed)
+            {
+                Death();
+            }
         }
+    }
+
+    void Death()
+    {
+        GameObject DeadAvator = (GameObject)Resources.Load(anycorpse);//Resourcesフォルダからプレハブを読み込む
+
+        GameObject corpse = Instantiate(DeadAvator, transform.position, transform.rotation);//死体生成
+        corpse.GetComponent<CorpseState>().vel = rb.velocity;
+
+        //死体用のクォータニオン
+        corpserot = new Quaternion[] {Pelvis.transform.rotation,Leg_L.transform.rotation, Knee_L.transform.rotation, Leg_R.transform.rotation, Knee_R.transform.rotation,
+                                   Spine1.transform.rotation,Spine2.transform.rotation,Head.transform.rotation,LeftArm.transform.rotation,LeftElbow.transform.rotation,
+                                   RightArm.transform.rotation,RightElbow.transform.rotation };
+
+        corpse.GetComponent<CorpseState>().rotation = corpserot;
+
+        //死体カメラへの値渡し
+        cpscmsc.target = corpse;
+
+        List_Corpse.Add(corpse);//リストに追加
+        if (List_Corpse.Count > 5)//死体が5体より多いなら古いものから消す
+        {
+            Destroy(List_Corpse[0]);
+            List_Corpse.RemoveAt(0);
+
+        }
+
+        rb.velocity = new Vector3(0, 0, 0);
+
+        cpscm.enabled = true;
+
+        this.gameObject.SetActive(false);
+        Invoke("Resporn", 2.0f);
     }
 
     void Resporn()

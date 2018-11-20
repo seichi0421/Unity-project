@@ -21,7 +21,7 @@ public class Gun : MonoBehaviour {
         py = transform.position.y;
         pz = transform.position.z;
 
-        
+        rb.mass = transform.localScale.x * transform.localScale.y * transform.localScale.z * 1000;
         
 	}
 	
@@ -49,16 +49,16 @@ public class Gun : MonoBehaviour {
 
             bull.transform.localScale = transform.localScale / 2;
             bullrb = bull.gameObject.GetComponent<Rigidbody>();
+            bullrb.mass = 5 * transform.localScale.x * transform.localScale.y * transform.localScale.z;
             Debug.Log(transform.position + bulletposition);
-            rb.velocity = new Vector3(0, 0, 0);
 
-            bulletposition = new Vector3(0,0,ScaleZ*2);
+            bulletposition = new Vector3(0,0,ScaleZ * 2);
             bulletposition = transform.TransformDirection(bulletposition);
-            rb.AddExplosionForce(bullrb.mass * 4000, transform.position + bulletposition, 0);
+            rb.AddExplosionForce(bullrb.mass * 8000, transform.position + bulletposition,0);
 
-            bulletposition = new Vector3(0, 0,ScaleZ/2);
+            bulletposition = new Vector3(0, 0,ScaleZ / 2);
             bulletposition = transform.TransformDirection(bulletposition);
-            bullrb.AddExplosionForce(bullrb.mass*4000,transform.position + bulletposition, 0);
+            bullrb.AddExplosionForce(bullrb.mass*8000,transform.position + bulletposition, 0);
             
         }
 		

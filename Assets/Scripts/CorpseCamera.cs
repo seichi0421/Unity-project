@@ -23,8 +23,8 @@ public class CorpseCamera : MonoBehaviour {
                 transform.position += ad;
             }
 
-
-            direction = target.transform.position - transform.position;
+            Debug.Log("aaaaaaaaaaaaaaaaaaaaa");
+            direction = target.transform.Find("Armature/Parent/Pelvis").transform.position - transform.position;
             rotation = Quaternion.LookRotation(direction);
             transform.rotation = rotation;
         }
